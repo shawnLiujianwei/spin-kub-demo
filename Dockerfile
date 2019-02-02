@@ -1,9 +1,19 @@
-FROM golang
+FROM node:8
 
-ADD . /go/src/github.com/lwander/k8s-demo
+# Create app directory
+WORKDIR /usr/src/app
 
-RUN go install github.com/lwander/k8s-demo
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
 
-ADD ./content /content
+RUN npm install
+# If you are building your code for production
+# RUN npm install --only=production
 
-ENTRYPOINT /go/bin/k8s-demo
+# Bundle app source
+COPY . .
+
+EXPOSE 8080
+CMD [ "npm", "start" ]
